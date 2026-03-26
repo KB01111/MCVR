@@ -117,6 +117,7 @@ void UIModule::initOverlayDescriptorTablesAndFrameSamplers() {
 
 void UIModule::initOverlayDrawImages() {
     auto framework = framework_.lock();
+    VkFormat overlayColorFormat = framework->swapchain()->vkSurfaceFormat().format;
 
     uint32_t size = framework->swapchain()->imageCount();
     overlayDrawColorImages_.resize(size);
@@ -125,7 +126,7 @@ void UIModule::initOverlayDrawImages() {
     for (int i = 0; i < size; i++) {
         overlayDrawColorImages_[i] = vk::DeviceLocalImage::create(
             framework->device(), framework->vma(), false, framework->swapchain()->vkExtent().width,
-            framework->swapchain()->vkExtent().height, 1, VK_FORMAT_R8G8B8A8_UNORM,
+            framework->swapchain()->vkExtent().height, 1, overlayColorFormat,
             VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT
 #ifdef USE_AMD
                 | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT
@@ -353,6 +354,7 @@ void UIModule::initOverlayDrawPipelines() {
 
 void UIModule::initOverlayPostImages() {
     auto framework = framework_.lock();
+    VkFormat overlayColorFormat = framework->swapchain()->vkSurfaceFormat().format;
 
     uint32_t size = framework->swapchain()->imageCount();
     overlayPostColorImages_.resize(size);
@@ -360,7 +362,7 @@ void UIModule::initOverlayPostImages() {
     for (int i = 0; i < size; i++) {
         overlayPostColorImages_[i] = vk::DeviceLocalImage::create(
             framework->device(), framework->vma(), false, framework->swapchain()->vkExtent().width,
-            framework->swapchain()->vkExtent().height, 1, VK_FORMAT_R8G8B8A8_UNORM,
+            framework->swapchain()->vkExtent().height, 1, overlayColorFormat,
             VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT
 #ifdef USE_AMD
                 | VK_IMAGE_USAGE_TRANSFER_SRC_BIT
